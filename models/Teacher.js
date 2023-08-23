@@ -3,9 +3,14 @@ const mongoose = require("mongoose");
 const teacherSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  contactInformation: String,
+  phoneNo: { type: String, required: true },
   assignedClasses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Class" }],
   subjectsTaught: [String],
+  age: { type: Number, required: true },
+  gender: { type: String, required: true },
+  qualification: { type: String, required: true },
+  address: { type: String } ,
+  password: { type: String, required: true }
 });
 
 module.exports = mongoose.model("Teacher", teacherSchema);

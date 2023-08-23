@@ -1,12 +1,16 @@
 const { response } = require("express");
 const express = require("express");
 const Student = require("../models/Student");
+const Teacher = require("../models/Teacher");
+const Admin = require("../models/Admin");
 const Class = require("../models/Class");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fetchUser = require("../Middleware/fetchUser");
+const fetchTeacher = require("../Middleware/fetchTeacher");
+const fetchAdmin = require("../Middleware/fetchAdmin");
 
 const JWT_SECRET = "Helloo!!Youarecute$#@";
 
@@ -138,5 +142,243 @@ router.post(
       }
     }
   );
+
+  //Teacher's APIs Below
+
+  router.post(
+    "/Teacher/add",
+    [
+      body("firstName", "firstName length should be minimum 3").isLength({ min: 3 }),
+      body("lastName", "lastName length should be minimum 3").isLength({ min: 3 }),
+    ],
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      try {
+        if (await Teacher.findOne({ phoneNo: req.body.phoneNo })) {
+          return res
+            .status(400)
+            .json({ errors: "An account is already created with this Phone Number" });
+        }
+
+  
+        const salt = await bcrypt.genSalt(10);
+        const SecPassword = await bcrypt.hash("PNSS-STAFF@123", salt);
+       
+        let newTeacher = await Teacher({
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          phoneNo: req.body.phoneNo,
+          assignedClasses: req.body.assignedClasses,
+          subjectsTaught: req.body.subjectsTaught,
+          age: req.body.age,
+          gender: req.body.gender,
+          qualification: req.body.qualification,
+          address: req.body.address,
+          password: SecPassword 
+        });
+        newTeacher
+          .save()
+          .then((data) => {
+            const Data = {
+              Teacher: {
+                id: Teacher.id,
+              },
+            };
+  
+            const AuthToken = jwt.sign(Data, JWT_SECRET);
+            res.json({ AuthToken });
+          })
+          .catch((error) => {
+            res.json(error);
+          });
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Some internal server error occured");
+      }
+    }
+  );
+
+  router.post(
+    "/Teacher/login",
+    [
+      body("phoneNo", "Enter a valid Phone Number").exists(),
+      body("password", "Passsword Cannot be Blank").exists(),
+    ],
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      const { phoneNo, password } = req.body;
+      try {
+       
+        let user = await Teacher.findOne({ phoneNo });
+        
+        if (!user) {
+          return res
+            .status(400)
+            .json({ errors: "Sorry the user does not exist" });
+        }
+  
+        const passwordCompare = await bcrypt.compare(password, user.password);
+        if (!passwordCompare) {
+          return res.status(400).json({ errors: "Incorrect Password" });
+        }
+  
+        const Data = {
+          Teacher: {
+            id: user.id,
+          },
+        };
+        console.log(Data);
+        const AuthToken = jwt.sign(Data, JWT_SECRET);
+        res.json({ AuthToken });
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Some internal server error occured");
+      }
+    }
+  );
+
+  router.get(
+    "/Teacher/getuser",
+    fetchTeacher,
+  
+    async (req, res) => {
+      try {
+
+       let userID = req.user.id;
+       console.log(userID)
+        const user = await Teacher.findById(userID).select("-password");
+        res.send(user)
+        console.log(user)
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Some internal server error occured");
+      }
+    }
+  );
+
+//Admin APIs Below
+
+router.post(
+  "/Admin/add",
+  [
+    body("firstName", "firstName length should be minimum 3").isLength({ min: 3 }),
+    body("lastName", "lastName length should be minimum 3").isLength({ min: 3 }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      if (await Admin.findOne({ phoneNo: req.body.username })) {
+        return res
+          .status(400)
+          .json({ errors: "An account is already created with this Username" });
+      }
+
+
+      const salt = await bcrypt.genSalt(10);
+      const SecPassword = await bcrypt.hash(req.body.password, salt);
+     
+      let newAdmin = await Admin({
+        username: req.body.username,
+        password: SecPassword,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        role: req.body.role
+      });
+      newAdmin
+        .save()
+        .then((data) => {
+          const Data = {
+            Admin: {
+              id: Admin.id,
+            },
+          };
+
+          const AuthToken = jwt.sign(Data, JWT_SECRET);
+          res.json({ AuthToken });
+        })
+        .catch((error) => {
+          res.json(error);
+        });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Some internal server error occured");
+    }
+  }
+);
+
+router.post(
+  "/Admin/login",
+  [
+    body("username", "Enter a valid Username").exists(),
+    body("password", "Passsword Cannot be Blank").exists(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { username, password } = req.body;
+    try {
+     
+      let user = await Admin.findOne({ username });
+      
+      if (!user) {
+        return res
+          .status(400)
+          .json({ errors: "Sorry the user does not exist" });
+      }
+
+      const passwordCompare = await bcrypt.compare(password, user.password);
+      if (!passwordCompare) {
+        return res.status(400).json({ errors: "Incorrect Password" });
+      }
+
+      const Data = {
+        Admin: {
+          id: user.id,
+        },
+      };
+      console.log(Data);
+      const AuthToken = jwt.sign(Data, JWT_SECRET);
+      res.json({ AuthToken });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Some internal server error occured");
+    }
+  }
+);
+
+router.get(
+  "/Admin/getuser",
+  fetchAdmin,
+
+  async (req, res) => {
+    try {
+
+     let userID = req.user.id;
+     console.log(userID)
+      const user = await Admin.findById(userID).select("-password");
+      res.send(user)
+      console.log(user)
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Some internal server error occured");
+    }
+  }
+);
+
 
 module.exports = router;

@@ -11,6 +11,11 @@ const studentSchema = new mongoose.Schema({
   parentDetails: String,
   class: { type: mongoose.Schema.Types.ObjectId, ref: "Class", required: true },
   section: String,
+  behaviorRecords: [{
+    date: Date,
+    description: String,
+    reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' }
+  }],
   password: {
     type: String,
     required: true
