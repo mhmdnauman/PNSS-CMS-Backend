@@ -120,7 +120,7 @@ router.post(
     }
   );
 
-  router.post(
+  router.get(
     "/Student/getuser",
     fetchUser,
   
