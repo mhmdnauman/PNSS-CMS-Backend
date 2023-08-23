@@ -107,9 +107,10 @@ router.post(
   
         const Data = {
           Student: {
-            id: Student.id,
+            id: user.id,
           },
         };
+        console.log(Data);
         const AuthToken = jwt.sign(Data, JWT_SECRET);
         res.json({ AuthToken });
       } catch (error) {
@@ -120,12 +121,14 @@ router.post(
   );
 
   router.post(
-    "/getuser",
+    "/Student/getuser",
     fetchUser,
   
     async (req, res) => {
       try {
-       let userID = req.Student.id;
+
+       let userID = req.user.id;
+       console.log(userID)
         const user = await Student.findById(userID).select("-password");
         res.send(user)
         console.log(user)
