@@ -4,6 +4,8 @@ const app = express();
 const PORT = 3000;
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
 
 app.use(express.json())
 app.use(cors());
@@ -19,6 +21,7 @@ mongoose.connect(process.env.DATABASE_ACCESS).then(()=>{
 
 });
 
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 //Available Routes
 

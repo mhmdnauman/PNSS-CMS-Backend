@@ -189,11 +189,15 @@ router.post(
             .status(400)
             .json({ errors: "An account is already created with this Phone Number" });
         }
-
   
         const salt = await bcrypt.genSalt(10);
         const SecPassword = await bcrypt.hash("PNSS-STAFF@123", salt);
-       
+        
+        const sectionsTaught = req.body.sectionsTaught.map(section => ({
+          class: section.class,
+          section: section.section,
+        }));
+        
         let newTeacher = await Teacher({
           firstName: req.body.firstName,
           lastName: req.body.lastName,
@@ -204,14 +208,15 @@ router.post(
           gender: req.body.gender,
           qualification: req.body.qualification,
           address: req.body.address,
+          sectionsTaught: sectionsTaught,
           password: SecPassword 
         });
-        newTeacher
-          .save()
-          .then((data) => {
+  
+        newTeacher.save()
+          .then((teacher) => {
             const Data = {
               Teacher: {
-                id: Teacher.id,
+                id: teacher.id,
               },
             };
   
@@ -223,10 +228,12 @@ router.post(
           });
       } catch (error) {
         console.error(error.message);
-        res.status(500).send("Some internal server error occured");
+        res.status(500).send("Some internal server error occurred");
       }
     }
   );
+  
+  
 
   router.post(
     "/teacher/login",

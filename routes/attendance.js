@@ -176,10 +176,36 @@ router.post("/teacher/checkout", async (req, res) => {
     const { date, checkOutList } = req.body;
 
     await Promise.all(checkOutList.map(async item => {
-      await AttendanceTeacher.updateOne(
-        { date, "attendanceList.teacher": item.teacherId },
-        { $set: { "attendanceList.$.checkOut": new Date(item.checkOutTime) } }
+      const checkInAttendance = await AttendanceTeacher.findOne(
+        { date, "attendanceList.teacher": item.teacherId }
       );
+
+      if (!checkInAttendance) {
+        // Teacher's check-in attendance not found
+        return;
+      }
+
+      const teacherAttendance = checkInAttendance.attendanceList.find(teacher => teacher.teacher.toString() === item.teacherId);
+      if (!teacherAttendance) {
+        // Teacher's attendance data not found
+        return;
+      }
+
+      const checkInTime = teacherAttendance.checkIn;
+      const checkOutTime = new Date(item.checkOutTime);
+
+      const timeDifference = checkOutTime - checkInTime;
+
+      if (timeDifference >= 21600000) {
+        // Teacher present
+        teacherAttendance.status = 'present';
+      } else {
+        // Teacher absent
+        teacherAttendance.status = 'absent';
+      }
+
+      teacherAttendance.checkOut = checkOutTime;
+      await checkInAttendance.save();
     }));
 
     res.status(201).json({ message: 'Check-out recorded successfully' });
