@@ -14,4 +14,4 @@ const attendanceTeacherSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Attendance", attendanceTeacherSchema);
+module.exports = mongoose.model("AttendanceTeacher", attendanceTeacherSchema);
