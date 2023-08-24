@@ -5,6 +5,7 @@ const router = express.Router();
 const Class = require("../models/Class");
 const Attendance = require("../models/Attendance");
 const AttendanceTeacher = require("../models/AttendanceTeacher");
+const Student =  require("../models/Student");
 const swaggerAutogen = require('swagger-autogen')();
 
 /**
@@ -217,7 +218,7 @@ router.post(
  */
 
   router.get(
-    "/teachers/get-attendance-by-student",
+    "/get-attendance-by-student",
     async (req, res) => {
       try {
         const { studentId, fromDate, toDate } = req.query;

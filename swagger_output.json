@@ -104,7 +104,7 @@
         }
       }
     },
-    "/teachers/get-attendance-by-student": {
+    "/get-attendance-by-student": {
       "get": {
         "description": "",
         "parameters": [
