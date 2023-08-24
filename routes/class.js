@@ -6,6 +6,23 @@ const router = express.Router();
 
 
 // Route to change the section of a student within a class
+
+/**
+ * @swagger
+ * /change-student-section:
+ *   put:
+ *     summary: Change the section of a student within a class
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChangeStudentSection'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
 router.put('/change-student-section', async (req, res) => {
     try {
       const { studentId, newSection } = req.body;
@@ -51,6 +68,23 @@ router.put('/change-student-section', async (req, res) => {
   
   // Route to shift students up one class based on examination results
 // Route to shift students up one class based on examination results
+
+/**
+ * @swagger
+ * /shift-students-up:
+ *   put:
+ *     summary: Shift students up one class based on examination results
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ShiftStudentsUp'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
 router.put('/shift-students-up', async (req, res) => {
     try {
       const { passingPercentage } = req.body;

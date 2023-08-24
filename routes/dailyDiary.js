@@ -5,6 +5,26 @@ const Class = require("../models/Class");
 const Teacher = require("../models/Teacher");
 const router = express.Router();
 
+/**
+ * @swagger
+ * /teacher/{teacherId}/classes-sections:
+ *   get:
+ *     summary: Get assigned classes and sections of a teacher
+ *     parameters:
+ *       - in: path
+ *         name: teacherId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TeacherClassesSections'
+ */
+
 router.get("/teacher/:teacherId/classes-sections", async (req, res) => {
     try {
       const teacherId = req.params.teacherId;
@@ -27,6 +47,26 @@ router.get("/teacher/:teacherId/classes-sections", async (req, res) => {
       res.status(500).send("Internal server error");
     }
   });
+
+  /**
+ * @swagger
+ * /teacher/add-diary:
+ *   post:
+ *     summary: Add a new diary entry
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AddDiary'
+ *     responses:
+ *       201:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DiaryEntry'
+ */
 
   router.post("/teacher/add-diary", async (req, res) => {
     try {
@@ -54,6 +94,37 @@ router.get("/teacher/:teacherId/classes-sections", async (req, res) => {
     }
   });
 
+
+  /**
+ * @swagger
+ * /daily-diary/{classId}/{section}/{subject}:
+ *   get:
+ *     summary: Get daily diary entry for a specific subject
+ *     parameters:
+ *       - in: path
+ *         name: classId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: section
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: subject
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DiarySubjectEntry'
+ */
+
   router.get("/daily-diary/:classId/:section/:subject", async (req, res) => {
     try {
       const { classId, section, subject } = req.params;
@@ -75,6 +146,31 @@ router.get("/teacher/:teacherId/classes-sections", async (req, res) => {
     }
   });
 
+/**
+ * @swagger
+ * /daily-diary/{classId}/{section}:
+ *   get:
+ *     summary: Get daily diary entry for a specific class and section
+ *     parameters:
+ *       - in: path
+ *         name: classId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: section
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DiaryEntry'
+ */
+
   router.get("/daily-diary/:classId/:section", async (req, res) => {
     try {
       const { classId, section } = req.params;
@@ -94,6 +190,32 @@ router.get("/teacher/:teacherId/classes-sections", async (req, res) => {
       res.status(500).send("Internal server error");
     }
   });
+
+  /**
+ * @swagger
+ * /teacher/edit-diary/{diaryId}:
+ *   put:
+ *     summary: Edit an existing diary entry
+ *     parameters:
+ *       - in: path
+ *         name: diaryId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/EditDiary'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DiaryEntry'
+ */
 
   router.put("/teacher/edit-diary/:diaryId", async (req, res) => {
     try {

@@ -1,5 +1,124 @@
 const { response } = require("express");
 const express = require("express");
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     NewStudent:
+ *       type: object
+ *       properties:
+ *         registrationNumber:
+ *           type: string
+ *           required: true
+ *         firstName:
+ *           type: string
+ *           required: true
+ *         lastName:
+ *           type: string
+ *           required: true
+ *         dateOfBirth:
+ *           type: string
+ *           format: date
+ *         gender:
+ *           type: string
+ *         contactInformation:
+ *           type: string
+ *         address:
+ *           type: string
+ *         parentDetails:
+ *           type: string
+ *         class:
+ *           type: string
+ *           format: uuid
+ *           required: true
+ *         section:
+ *           type: string
+ *         password:
+ *           type: string
+ *           required: true
+ *     StudentLogin:
+ *       type: object
+ *       properties:
+ *         registrationNumber:
+ *           type: string
+ *           required: true
+ *         password:
+ *           type: string
+ *           required: true
+ *     NewTeacher:
+ *       type: object
+ *       properties:
+ *         firstName:
+ *           type: string
+ *           required: true
+ *         lastName:
+ *           type: string
+ *           required: true
+ *         phoneNo:
+ *           type: string
+ *           required: true
+ *         assignedClasses:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uuid
+ *         sectionsTaught:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               class:
+ *                 type: string
+ *                 format: uuid
+ *               section:
+ *                 type: string
+ *         subjectsTaught:
+ *           type: array
+ *           items:
+ *             type: string
+ *         age:
+ *           type: number
+ *           required: true
+ *         gender:
+ *           type: string
+ *           required: true
+ *         qualification:
+ *           type: string
+ *           required: true
+ *         address:
+ *           type: string
+ *         password:
+ *           type: string
+ *           required: true
+ *     TeacherLogin:
+ *       type: object
+ *       properties:
+ *         phoneNo:
+ *           type: string
+ *           required: true
+ *         password:
+ *           type: string
+ *           required: true
+ *     NewAdmin:
+ *       type: object
+ *       properties:
+ *         username:
+ *           type: string
+ *           required: true
+ *         password:
+ *           type: string
+ *           required: true
+ *         firstName:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         role:
+ *           type: string
+ *           enum: [admin, admin-staff]
+ *           required: true
+ */
+
 const Student = require("../models/Student");
 const Teacher = require("../models/Teacher");
 const Admin = require("../models/Admin");
@@ -11,9 +130,25 @@ const jwt = require("jsonwebtoken");
 const fetchUser = require("../Middleware/fetchUser");
 const fetchTeacher = require("../Middleware/fetchTeacher");
 const fetchAdmin = require("../Middleware/fetchAdmin");
+const swaggerAutogen = require('swagger-autogen')();
 
 const JWT_SECRET = "Helloo!!Youarecute$#@";
 
+/**
+ * @swagger
+ * /admission:
+ *   post:
+ *     summary: Register a new student
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NewStudent'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
 
 router.post(
     "/admission",
@@ -107,6 +242,23 @@ router.post(
     }
   );
 
+  /**
+ * @swagger
+ * /student/login:
+ *   post:
+ *     summary: Student login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StudentLogin'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
+
   router.post(
     "/student/login",
     [
@@ -150,6 +302,17 @@ router.post(
     }
   );
 
+
+  /**
+ * @swagger
+ * /student/getuser:
+ *   get:
+ *     summary: Get student's user information
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
   router.get(
     "/student/getuser",
     fetchUser,
@@ -170,7 +333,21 @@ router.post(
   );
 
   //Teacher's APIs Below
-
+/**
+ * @swagger
+ * /teacher/add:
+ *   post:
+ *     summary: Register a new teacher
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NewTeacher'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
   router.post(
     "/teacher/add",
     [
@@ -233,7 +410,21 @@ router.post(
     }
   );
   
-  
+/**
+ * @swagger
+ * /teacher/login:
+ *   post:
+ *     summary: Teacher login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TeacherLogin'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */  
 
   router.post(
     "/teacher/login",
@@ -278,6 +469,16 @@ router.post(
     }
   );
 
+/**
+ * @swagger
+ * /teacher/getuser:
+ *   get:
+ *     summary: Get teacher's user information
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
   router.get(
     "/teacher/getuser",
     fetchTeacher,
@@ -298,6 +499,22 @@ router.post(
   );
 
 //Admin APIs Below
+
+/**
+ * @swagger
+ * /admin/add:
+ *   post:
+ *     summary: Register a new admin
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NewAdmin'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
 
 router.post(
   "/admin/add",
@@ -351,6 +568,23 @@ router.post(
   }
 );
 
+
+/**
+ * @swagger
+ * /admin/login:
+ *   post:
+ *     summary: Admin login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AdminLogin'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
 router.post(
   "/admin/login",
   [
@@ -393,6 +627,16 @@ router.post(
     }
   }
 );
+
+/**
+ * @swagger
+ * /admin/getuser:
+ *   get:
+ *     summary: Get admin's user information
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
 
 router.get(
   "/admin/getuser",

@@ -23,6 +23,7 @@ mongoose.connect(process.env.DATABASE_ACCESS).then(()=>{
 
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
+
 //Available Routes
 
 app.use('/api/v1/auth', require('./routes/auth'));

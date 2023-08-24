@@ -5,7 +5,26 @@ const router = express.Router();
 const Class = require("../models/Class");
 const Attendance = require("../models/Attendance");
 const AttendanceTeacher = require("../models/AttendanceTeacher");
+const swaggerAutogen = require('swagger-autogen')();
 
+/**
+ * @swagger
+ * /get-students:
+ *   get:
+ *     summary: Get students for a class and section
+ *     parameters:
+ *       - name: classId
+ *         in: query
+ *         required: true
+ *         type: string
+ *       - name: section
+ *         in: query
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
 
 router.get(
   "/get-students",
@@ -45,6 +64,21 @@ router.get(
 );
 
 
+/**
+ * @swagger
+ * /student:
+ *   post:
+ *     summary: Record student attendance
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Attendance'
+ *     responses:
+ *       201:
+ *         description: Successful response
+ */
 
 router.post(
     "/student",
@@ -89,6 +123,37 @@ router.post(
     }
   );
 
+
+  /**
+ * @swagger
+ * /students/get-attendance:
+ *   get:
+ *     summary: Get student attendance records for a class and section
+ *     parameters:
+ *       - name: classId
+ *         in: query
+ *         required: true
+ *         type: string
+ *       - name: section
+ *         in: query
+ *         required: true
+ *         type: string
+ *       - name: fromDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *       - name: toDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
+
   router.get(
     "/students/get-attendance",
     async (req, res) => {
@@ -126,6 +191,31 @@ router.post(
     }
   );
 
+  /**
+ * @swagger
+ * /teachers/get-attendance-by-student:
+ *   get:
+ *     summary: Get teacher attendance records for a student
+ *     parameters:
+ *       - name: studentId
+ *         in: query
+ *         required: true
+ *         type: string
+ *       - name: fromDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *       - name: toDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
   router.get(
     "/teachers/get-attendance-by-student",
     async (req, res) => {
@@ -153,6 +243,25 @@ router.post(
   );
 
  // Check-In endpoint
+
+/**
+ * @swagger
+ * /teacher/checkin:
+ *   post:
+ *     summary: Record teacher check-in
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TeacherCheckin'
+ *     responses:
+ *       201:
+ *         description: Successful response
+ */
+
+
+
 router.post("/teacher/checkin", async (req, res) => {
   try {
     const { date, checkInList } = req.body;
@@ -171,6 +280,23 @@ router.post("/teacher/checkin", async (req, res) => {
 });
 
 // Check-Out endpoint
+
+/**
+ * @swagger
+ * /teacher/checkout:
+ *   post:
+ *     summary: Record teacher check-out
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TeacherCheckout'
+ *     responses:
+ *       201:
+ *         description: Successful response
+ */
+
 router.post("/teacher/checkout", async (req, res) => {
   try {
     const { date, checkOutList } = req.body;
@@ -214,6 +340,26 @@ router.post("/teacher/checkout", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /teachers/get-attendance:
+ *   get:
+ *     summary: Get teacher attendance records
+ *     parameters:
+ *       - name: fromDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *       - name: toDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
 
   router.get(
     "/teachers/get-attendance",
@@ -234,6 +380,32 @@ router.post("/teacher/checkout", async (req, res) => {
     }
   );
   
+
+  /**
+ * @swagger
+ * /teachers/get-attendance-by-teacher:
+ *   get:
+ *     summary: Get teacher attendance records for a specific teacher
+ *     parameters:
+ *       - name: teacherId
+ *         in: query
+ *         required: true
+ *         type: string
+ *       - name: fromDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *       - name: toDate
+ *         in: query
+ *         required: true
+ *         type: string
+ *         format: date
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
   router.get(
     "/teachers/get-attendance-by-teacher",
     async (req, res) => {
