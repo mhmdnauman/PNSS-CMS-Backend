@@ -23,6 +23,7 @@ mongoose.connect(process.env.DATABASE_ACCESS).then(()=>{
 //Available Routes
 
 app.use('/api/v1/auth', require('./routes/auth'));
+app.use('/api/v1/attendence', require('./routes/attendance'));
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);

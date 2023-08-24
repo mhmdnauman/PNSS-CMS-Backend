@@ -82,7 +82,7 @@ router.post(
   );
 
   router.post(
-    "/Student/login",
+    "/student/login",
     [
       body("registrationNumber", "Enter a valid Registration Number").exists(),
       body("password", "Passsword Cannot be Blank").exists(),
@@ -125,7 +125,7 @@ router.post(
   );
 
   router.get(
-    "/Student/getuser",
+    "/student/getuser",
     fetchUser,
   
     async (req, res) => {
@@ -146,7 +146,7 @@ router.post(
   //Teacher's APIs Below
 
   router.post(
-    "/Teacher/add",
+    "/teacher/add",
     [
       body("firstName", "firstName length should be minimum 3").isLength({ min: 3 }),
       body("lastName", "lastName length should be minimum 3").isLength({ min: 3 }),
@@ -203,7 +203,7 @@ router.post(
   );
 
   router.post(
-    "/Teacher/login",
+    "/teacher/login",
     [
       body("phoneNo", "Enter a valid Phone Number").exists(),
       body("password", "Passsword Cannot be Blank").exists(),
@@ -246,7 +246,7 @@ router.post(
   );
 
   router.get(
-    "/Teacher/getuser",
+    "/teacher/getuser",
     fetchTeacher,
   
     async (req, res) => {
@@ -267,7 +267,7 @@ router.post(
 //Admin APIs Below
 
 router.post(
-  "/Admin/add",
+  "/admin/add",
   [
     body("firstName", "firstName length should be minimum 3").isLength({ min: 3 }),
     body("lastName", "lastName length should be minimum 3").isLength({ min: 3 }),
@@ -319,7 +319,7 @@ router.post(
 );
 
 router.post(
-  "/Admin/login",
+  "/admin/login",
   [
     body("username", "Enter a valid Username").exists(),
     body("password", "Passsword Cannot be Blank").exists(),
@@ -362,7 +362,7 @@ router.post(
 );
 
 router.get(
-  "/Admin/getuser",
+  "/admin/getuser",
   fetchAdmin,
 
   async (req, res) => {
