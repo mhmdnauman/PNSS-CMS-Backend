@@ -27,7 +27,7 @@ app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 //Available Routes
 
 app.use('/api/v1/auth', require('./routes/auth'));
-app.use('/api/v1/attendence', require('./routes/attendance'));
+app.use('/api/v1/attendance', require('./routes/attendance'));
 app.use('/api/v1/class', require('./routes/class'));
 
 app.listen(PORT, () => {
