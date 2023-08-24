@@ -9,6 +9,8 @@ const attendanceTeacherSchema = new mongoose.Schema({
         ref: "Teacher",
         required: true,
       },
+      checkIn: { type: Date },
+      checkOut: { type: Date },
       status: { type: String, required: true },
     },
   ],

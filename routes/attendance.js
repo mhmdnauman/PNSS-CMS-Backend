@@ -152,29 +152,42 @@ router.post(
     }
   );
 
-  router.post(
-    "/teacher",
-    async (req, res) => {
-      try {
-        const { date, attendanceList } = req.body;
+ // Check-In endpoint
+router.post("/teacher/checkin", async (req, res) => {
+  try {
+    const { date, checkInList } = req.body;
 
-        // Create the attendance record
-        const attendanceTeacher = new AttendanceTeacher({
-          date: new Date(date),
-          attendanceList: attendanceList.map(item => ({
-            teacher: item.teacherId,
-            status: item.status
-          }))
-        });
-    
-        await attendanceTeacher.save();
-    
-        res.status(201).json({ message: 'Attendance recorded successfully' });
-      } catch (error) {
-        res.status(500).json({ message: 'Error recording attendance', error: error.message });
-      }
-    }
-  );
+    await Promise.all(checkInList.map(async item => {
+      await AttendanceTeacher.updateOne(
+        { date, "attendanceList.teacher": item.teacherId },
+        { $set: { "attendanceList.$.checkIn": new Date(item.checkInTime) } }
+      );
+    }));
+
+    res.status(201).json({ message: 'Check-in recorded successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error recording check-in', error: error.message });
+  }
+});
+
+// Check-Out endpoint
+router.post("/teacher/checkout", async (req, res) => {
+  try {
+    const { date, checkOutList } = req.body;
+
+    await Promise.all(checkOutList.map(async item => {
+      await AttendanceTeacher.updateOne(
+        { date, "attendanceList.teacher": item.teacherId },
+        { $set: { "attendanceList.$.checkOut": new Date(item.checkOutTime) } }
+      );
+    }));
+
+    res.status(201).json({ message: 'Check-out recorded successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error recording check-out', error: error.message });
+  }
+});
+
 
   router.get(
     "/teachers/get-attendance",
