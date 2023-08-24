@@ -61,13 +61,39 @@ router.post(
         });
         newStudent
           .save()
-          .then((data) => {
+          .then(async (data) => {
             const Data = {
               Student: {
                 id: Student.id,
               },
             };
   
+
+             const selectedClass = await Class.findById(selectedClass._id);
+
+          if (!selectedClass) {
+            return res.status(404).json({ message: 'Class not found' });
+          }
+
+          // Find the specific section within the class
+          const selectedSection = selectedClass.sections.find(sec => sec.sectionName === req.body.section);
+
+          if (!selectedSection) {
+            return res.status(404).json({ message: 'Section not found in the class' });
+          }
+
+          // Check if the student is already in the section
+          if (selectedSection.students.includes(Student.Id)) {
+            return res.status(409).json({ message: 'Student already exists in the section' });
+          }
+
+          // Add the student to the section
+          selectedSection.students.push(Student.Id);
+
+          await selectedClass.save();
+
+
+
             const AuthToken = jwt.sign(Data, JWT_SECRET);
             res.json({ AuthToken });
           })
